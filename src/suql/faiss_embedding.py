@@ -28,12 +28,13 @@ def embed_query(query):
     # currently using https://huggingface.co/BAAI/bge-large-en-v1.5
     # change this line for custom embedding model
     from FlagEmbedding import FlagModel
-    
+    import torch
+
     model = FlagModel(
         "BAAI/bge-large-en-v1.5",
         query_instruction_for_retrieval="Represent this sentence for searching relevant passages:",
-        use_fp16=True,
-    )  # Setting use_fp16 to True speeds up computation with a slight performance degradation
+        use_fp16=torch.cuda.is_available(),
+    )  # fp16 is only safe on CUDA; auto-detect so this also runs on CPU
     q_embedding = model.encode_queries([query])
     return q_embedding
 
@@ -46,12 +47,13 @@ def embed_documents(documents):
     # currently using https://huggingface.co/BAAI/bge-large-en-v1.5
     # change this line for custom embedding model
     from FlagEmbedding import FlagModel
-    
+    import torch
+
     model = FlagModel(
         "BAAI/bge-large-en-v1.5",
         query_instruction_for_retrieval="Represent this sentence for searching relevant passages:",
-        use_fp16=True,
-    )  # Setting use_fp16 to True speeds up computation with a slight performance degradation
+        use_fp16=torch.cuda.is_available(),
+    )  # fp16 is only safe on CUDA; auto-detect so this also runs on CPU
     embeddings = model.encode(documents)
     return embeddings
 
